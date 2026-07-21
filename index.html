@@ -4,6 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Corper EasyBuy — Serve Now, Pay Small</title>
+<meta name="description" content="Buy now, pay small. 25% deposit, 4 months, 5% interest. For corps members in Lagos.">
+<meta name="theme-color" content="#146142">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Corper EasyBuy">
+<link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23146142'/%3E%3Ctext x='32' y='44' font-size='36' text-anchor='middle' fill='%23E8A33D' font-family='serif' font-weight='bold'%3EC%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -737,6 +744,15 @@
   .how-step strong{font-size:14px;color:var(--charcoal);}
   .how-step p{font-size:12.5px;color:#7A7264;margin:2px 0 0;line-height:1.5;}
 
+  /* COMMENTS */
+  .comment-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+  }
+
   /* CART */
   .cart-overlay{
     position:fixed;
@@ -868,7 +884,7 @@
 
   <header>
     <div style="display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;" id="logo-tap-area">
         <svg width="40" height="40" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
           <rect width="64" height="64" rx="14" fill="rgba(255,255,255,0.15)"/>
           <text x="32" y="44" font-size="36" text-anchor="middle" fill="#E8A33D" font-family="serif" font-weight="bold">C</text>
@@ -890,8 +906,8 @@
     <div class="tab active" data-tab="catalog">Catalog</div>
     <div class="tab" data-tab="register">Register</div>
     <div class="tab" data-tab="payments">Pay</div>
+    <div class="tab" data-tab="comments">Reviews</div>
     <div class="tab" data-tab="info">Info</div>
-    <div class="tab" data-tab="admin">Manage</div>
   </div>
 
   <!-- CATALOG VIEW -->
@@ -982,6 +998,12 @@
           <div id="posting-preview-wrap"></div>
         </div>
         <div class="field">
+          <label>Upload utility bill (NEPA/water/rent receipt showing your address)</label>
+          <input type="file" id="reg-utility" accept="image/*,application/pdf">
+          <div id="utility-preview-wrap"></div>
+          <p style="font-size:11px;color:#7A7264;margin:4px 0 0;">This confirms your delivery address. Any recent bill with your name and address works.</p>
+        </div>
+        <div class="field">
           <label>Referral code (optional)</label>
           <input type="text" id="reg-refcode" placeholder="e.g. CEB-A7K2" style="text-transform:uppercase;">
         </div>
@@ -1044,6 +1066,35 @@
       <button class="btn-secondary" id="check-ref-btn" style="margin-bottom:0;">Check my referrals</button>
       <div id="ref-result"></div>
       <div id="payout-request-wrap" class="hidden" style="margin-top:12px;">
+        <div class="field">
+          <label>Account name</label>
+          <input type="text" id="payout-acct-name" placeholder="e.g. Chidinma Okafor">
+        </div>
+        <div class="field">
+          <label>Account number</label>
+          <input type="tel" id="payout-acct-number" placeholder="e.g. 8012345678" maxlength="10">
+        </div>
+        <div class="field">
+          <label>Bank</label>
+          <select id="payout-bank">
+            <option value="">Select bank...</option>
+            <option>Opay</option>
+            <option>Kuda Bank</option>
+            <option>Moniepoint</option>
+            <option>PalmPay</option>
+            <option>Access Bank</option>
+            <option>GTBank</option>
+            <option>First Bank</option>
+            <option>UBA</option>
+            <option>Zenith Bank</option>
+            <option>Sterling Bank</option>
+            <option>Union Bank</option>
+            <option>Wema Bank</option>
+            <option>FCMB</option>
+            <option>Stanbic IBTC</option>
+            <option>Other</option>
+          </select>
+        </div>
         <button class="btn-primary" id="request-payout-btn">Request payout</button>
       </div>
     </div>
@@ -1125,6 +1176,37 @@
       <div class="how-step" style="margin-bottom:0;"><span class="how-num">5</span><div><strong>Pay monthly</strong><p>4 equal monthly payments, tracked right here in the app.</p></div></div>
     </div>
 
+  </div>
+
+  <!-- COMMENTS VIEW -->
+  <div class="view hidden" id="view-comments">
+    <div class="section-label">Reviews & comments</div>
+    <div class="admin-form">
+      <p style="font-size:13px;color:#7A7264;margin:0 0 12px;line-height:1.5;">Share your experience with Corper EasyBuy. Only registered members can comment.</p>
+      <div id="comment-form-wrap">
+        <div class="field">
+          <label>Your phone number (used at registration)</label>
+          <input type="tel" id="comment-phone" placeholder="e.g. 0813xxxxxxx">
+        </div>
+        <div class="field">
+          <label>Your comment</label>
+          <textarea id="comment-text" placeholder="Share your experience, review a product, or give feedback..." style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:13px;background:var(--paper);resize:none;height:80px;"></textarea>
+        </div>
+        <div class="field">
+          <label>Rating</label>
+          <div id="star-rating" style="display:flex;gap:6px;font-size:28px;cursor:pointer;">
+            <span class="star" data-val="1">☆</span>
+            <span class="star" data-val="2">☆</span>
+            <span class="star" data-val="3">☆</span>
+            <span class="star" data-val="4">☆</span>
+            <span class="star" data-val="5">☆</span>
+          </div>
+        </div>
+        <button class="btn-primary" id="submit-comment-btn">Post comment</button>
+      </div>
+    </div>
+    <div class="section-label">What members are saying</div>
+    <div id="comments-list-public"></div>
   </div>
 
   <!-- ADMIN VIEW -->
@@ -1232,6 +1314,13 @@
           <input type="text" id="o-refcode" placeholder="e.g. CEB-A7K2" style="text-transform:uppercase;">
         </div>
         <div class="field">
+          <label>Service status</label>
+          <select id="o-status">
+            <option value="active">Active (currently serving)</option>
+            <option value="passedout">Passed out (referrals only)</option>
+          </select>
+        </div>
+        <div class="field">
           <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
             <input type="checkbox" id="o-verified" style="width:16px;height:16px;accent-color:var(--green-deep);">
             <span>Identity verified (NYSC portal checked)</span>
@@ -1264,6 +1353,11 @@
   </div>
 
   <footer>CORPER EASYBUY</footer>
+</div>
+
+<!-- Hidden admin access button -->
+<div id="admin-access-btn" style="display:none;position:fixed;bottom:80px;right:16px;z-index:50;background:var(--green-deep);color:#fff;border:none;border-radius:50px;padding:10px 18px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 4px 16px rgba(20,97,66,0.4);">
+  🔐 Admin
 </div>
 
 <!-- CART -->
@@ -1327,6 +1421,7 @@ let receipts = [];
 let referrers = [];
 let payouts = [];
 let complaints = [];
+let comments = [];
 
 // ---------- Termii SMS ----------
 const TERMII_KEY = 'tlv_J6_6JnOxIv--CpFHZe68CrzML2iS7RCcb5mtYGB5ydc';
@@ -1401,6 +1496,11 @@ if(firebaseReady){
     complaints = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     if(adminUnlocked) renderComplaints();
   }, (err)=>console.error('Complaints sync error:', err));
+
+  db.collection('comments').orderBy('createdAt','desc').onSnapshot((snapshot)=>{
+    comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderPublicComments();
+  }, (err)=>console.error('Comments sync error:', err));
 }
 
 function calcPlan(price){
@@ -1660,10 +1760,12 @@ function switchTab(tabName){
   document.getElementById('view-detail').classList.add('hidden');
   document.getElementById('view-register').classList.toggle('hidden', tabName!=='register');
   document.getElementById('view-payments').classList.toggle('hidden', tabName!=='payments');
+  document.getElementById('view-comments').classList.toggle('hidden', tabName!=='comments');
   document.getElementById('view-info').classList.toggle('hidden', tabName!=='info');
   document.getElementById('view-admin').classList.toggle('hidden', tabName!=='admin');
   if(tabName==='payments') renderMyOrders();
   if(tabName==='info') startDeliveryCountdown();
+  if(tabName==='comments') renderPublicComments();
   if(tabName==='admin'){
     document.getElementById('admin-lock').classList.toggle('hidden', adminUnlocked);
     document.getElementById('admin-content').classList.toggle('hidden', !adminUnlocked);
@@ -1820,6 +1922,7 @@ function renderOrders(){
         document.getElementById('o-refcode').value = order.refCode || '';
         document.getElementById('o-verified').checked = order.verified || false;
         document.getElementById('o-notes').value = order.notes || '';
+        document.getElementById('o-status').value = order.serviceStatus || 'active';
         document.getElementById('o-name').scrollIntoView({behavior:'smooth', block:'center'});
       }
     });
@@ -1837,6 +1940,7 @@ document.getElementById('save-order-btn').addEventListener('click', ()=>{
   const refCode = document.getElementById('o-refcode').value.trim().toUpperCase();
   const verified = document.getElementById('o-verified').checked;
   const notes = document.getElementById('o-notes').value.trim();
+  const serviceStatus = document.getElementById('o-status').value;
 
   if(!name || !phone || !item || !price){ showToast('Fill in all order fields'); return; }
   if(!firebaseReady){ showToast('Not connected — check your internet'); return; }
@@ -1848,7 +1952,7 @@ document.getElementById('save-order-btn').addEventListener('click', ()=>{
     if(existing) prevDepositPaid = existing.deposit === 'yes';
   }
 
-  const data = { name, phone, item, price, deposit, months, refCode, verified, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  const data = { name, phone, item, price, deposit, months, refCode, verified, notes, serviceStatus, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
   const writePromise = editId ? ordersRef.doc(editId).update(data) : ordersRef.add(data);
 
   writePromise.then(()=>{
@@ -1902,6 +2006,7 @@ document.getElementById('save-order-btn').addEventListener('click', ()=>{
     document.getElementById('o-refcode').value = '';
     document.getElementById('o-verified').checked = false;
     document.getElementById('o-notes').value = '';
+    document.getElementById('o-status').value = 'active';
   }).catch((err)=>{
     console.error(err);
     showToast('Could not save order');
@@ -2068,6 +2173,14 @@ document.getElementById('submit-reg-btn').addEventListener('click', async ()=>{
     return;
   }
 
+  // Block passed-out corps members from new orders
+  const existingOrder = orders.find(o => normPhone(o.phone) === normPhone(phone));
+  if(existingOrder && existingOrder.serviceStatus === 'passedout'){
+    showToast('Your service year has ended. You can only earn from referrals.');
+    btn.disabled=false; btn.textContent='Submit registration';
+    return;
+  }
+
   btn.disabled=true; btn.textContent='Submitting...';
 
   const postingData = currentPostingImage === 'PDF_ATTACHED'
@@ -2078,8 +2191,10 @@ document.getElementById('submit-reg-btn').addEventListener('click', async ()=>{
     name, phone, nysc, state, item, price,
     address, refCode,
     posting: postingData,
+    utility: currentUtilityImage || '',
     deposit: 'no', months: 0,
     status: 'Pending verification',
+    serviceStatus: 'active',
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   }).then(()=>{
     // remember this customer on device
@@ -2095,9 +2210,12 @@ document.getElementById('submit-reg-btn').addEventListener('click', async ()=>{
     });
     document.getElementById('reg-phone').value='';
     document.getElementById('reg-posting').value='';
+    document.getElementById('reg-utility').value='';
     document.getElementById('posting-preview-wrap').innerHTML='';
+    document.getElementById('utility-preview-wrap').innerHTML='';
     document.getElementById('reg-plan-preview').classList.add('hidden');
     currentPostingImage='';
+    currentUtilityImage='';
 
     // redirect to Pay tab after a moment
     setTimeout(()=>{
@@ -2221,20 +2339,18 @@ function compressImage(file, maxDim, quality){
       const img = new Image();
       img.onload = ()=>{
         let w = img.width, h = img.height;
-        if(w > h && w > maxDim){ h = Math.round(h * maxDim / w); w = maxDim; }
-        else if(h > maxDim){ w = Math.round(w * maxDim / h); h = maxDim; }
+        // Always resize to max 600px to keep file small and fast
+        const MAX = 600;
+        if(w > h && w > MAX){ h = Math.round(h * MAX / w); w = MAX; }
+        else if(h > MAX){ w = Math.round(w * MAX / h); h = MAX; }
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        let dataUrl = canvas.toDataURL('image/jpeg', quality);
-        if(dataUrl.length > 700000){
-          dataUrl = canvas.toDataURL('image/jpeg', 0.4);
-        }
-        if(dataUrl.length > 700000){
-          reject(new Error('too large'));
-        }else{
-          resolve(dataUrl);
-        }
+        // Start at quality 0.6, drop to 0.4 if still too big
+        let dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+        if(dataUrl.length > 400000) dataUrl = canvas.toDataURL('image/jpeg', 0.4);
+        if(dataUrl.length > 400000) dataUrl = canvas.toDataURL('image/jpeg', 0.25);
+        resolve(dataUrl);
       };
       img.onerror = reject;
       img.src = ev.target.result;
@@ -2405,24 +2521,6 @@ document.getElementById('check-ref-btn').addEventListener('click', async ()=>{
   }
 });
 
-document.getElementById('request-payout-btn').addEventListener('click', ()=>{
-  const phone = normPhone(document.getElementById('ref-phone').value);
-  const referrer = referrers.find(r => normPhone(r.phone) === phone);
-  if(!referrer || (referrer.earnings||0) <= 0){ showToast('No earnings to request'); return; }
-  if(!firebaseReady){ showToast('Not connected — check your internet'); return; }
-
-  payoutsRef.add({
-    phone: referrer.phone,
-    code: referrer.code,
-    amount: referrer.earnings,
-    status: 'pending',
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  }).then(()=>{
-    showToast('Payout request sent');
-    document.getElementById('payout-request-wrap').classList.add('hidden');
-  }).catch(()=>showToast('Could not submit request — check your internet'));
-});
-
 // ---------- Admin: render payout requests ----------
 function renderPayouts(){
   const list = document.getElementById('payouts-list');
@@ -2439,6 +2537,7 @@ function renderPayouts(){
     row.innerHTML = `
       <div>
         <div class="p-name">${escapeHtml(p.phone)} · ${escapeHtml(p.code)}</div>
+        <div style="font-size:11px;color:#7A7264;">${escapeHtml(p.acctName||'')} · ${escapeHtml(p.acctNumber||'')} · ${escapeHtml(p.bank||'')}</div>
         <div style="font-size:11px;color:#A79E8C;">Requested ${p.createdAt&&p.createdAt.toDate?p.createdAt.toDate().toLocaleDateString('en-NG'):''}</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -2652,6 +2751,174 @@ document.getElementById('submit-complaint-btn').addEventListener('click', ()=>{
   });
 });
 
+// ---------- Secret admin tap ----------
+let logoTapCount = 0;
+let logoTapTimer = null;
+document.getElementById('logo-tap-area').addEventListener('click', ()=>{
+  logoTapCount++;
+  clearTimeout(logoTapTimer);
+  if(logoTapCount >= 5){
+    logoTapCount = 0;
+    const btn = document.getElementById('admin-access-btn');
+    btn.style.display = 'block';
+    showToast('Admin access unlocked 🔐');
+    setTimeout(()=>{ btn.style.display = 'none'; }, 30000); // hide after 30s
+  }else{
+    logoTapTimer = setTimeout(()=>{ logoTapCount = 0; }, 2000);
+  }
+});
+
+document.getElementById('admin-access-btn').addEventListener('click', ()=>{
+  document.getElementById('admin-access-btn').style.display = 'none';
+  switchTab('admin');
+});
+
+// ---------- Comments system ----------
+let selectedRating = 0;
+let comments = [];
+
+document.querySelectorAll('.star').forEach(star=>{
+  star.addEventListener('click', ()=>{
+    selectedRating = parseInt(star.dataset.val);
+    document.querySelectorAll('.star').forEach((s,i)=>{
+      s.textContent = i < selectedRating ? '★' : '☆';
+    });
+  });
+  star.addEventListener('mouseover', ()=>{
+    const val = parseInt(star.dataset.val);
+    document.querySelectorAll('.star').forEach((s,i)=>{
+      s.textContent = i < val ? '★' : '☆';
+    });
+  });
+  star.addEventListener('mouseout', ()=>{
+    document.querySelectorAll('.star').forEach((s,i)=>{
+      s.textContent = i < selectedRating ? '★' : '☆';
+    });
+  });
+});
+
+document.getElementById('submit-comment-btn').addEventListener('click', ()=>{
+  const phone = normPhone(document.getElementById('comment-phone').value);
+  const text = document.getElementById('comment-text').value.trim();
+  const btn = document.getElementById('submit-comment-btn');
+
+  if(!phone){ showToast('Enter your phone number'); return; }
+  if(!text){ showToast('Write your comment first'); return; }
+  if(selectedRating === 0){ showToast('Please select a star rating'); return; }
+  if(!firebaseReady){ showToast('Not connected — check your internet'); return; }
+
+  // Check if phone is registered
+  const isRegistered = orders.some(o => normPhone(o.phone) === phone);
+  if(!isRegistered){
+    showToast('Only registered members can comment');
+    return;
+  }
+
+  // Check service status — passed out members can comment
+  btn.disabled = true; btn.textContent = 'Posting...';
+  const order = orders.find(o => normPhone(o.phone) === phone);
+  const commenterName = order ? order.name.split(' ')[0] : 'Member';
+
+  db.collection('comments').add({
+    phone, text, rating: selectedRating,
+    name: commenterName,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    showToast('Comment posted ✓');
+    document.getElementById('comment-phone').value = '';
+    document.getElementById('comment-text').value = '';
+    selectedRating = 0;
+    document.querySelectorAll('.star').forEach(s=>s.textContent='☆');
+  }).catch(()=>{
+    showToast('Could not post — check your internet');
+  }).finally(()=>{
+    btn.disabled = false; btn.textContent = 'Post comment';
+  });
+});
+
+function renderPublicComments(){
+  const list = document.getElementById('comments-list-public');
+  if(!list) return;
+  list.innerHTML = '';
+  if(comments.length === 0){
+    list.innerHTML = '<div class="empty-state">No comments yet. Be the first!</div>';
+    return;
+  }
+  comments.forEach(c=>{
+    const time = c.createdAt&&c.createdAt.toDate ? c.createdAt.toDate().toLocaleDateString('en-NG') : '';
+    const stars = '★'.repeat(c.rating||0) + '☆'.repeat(5-(c.rating||0));
+    const card = document.createElement('div');
+    card.className = 'comment-card';
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;">
+        <div>
+          <span style="font-weight:600;font-size:14px;">${escapeHtml(c.name||'Member')}</span>
+          <span style="font-size:11px;color:#A79E8C;margin-left:8px;">${time}</span>
+        </div>
+        <span style="color:var(--amber);font-size:14px;letter-spacing:1px;">${stars}</span>
+      </div>
+      <p style="font-size:13.5px;color:var(--charcoal);margin:0;line-height:1.6;">${escapeHtml(c.text)}</p>
+    `;
+    list.appendChild(card);
+  });
+}
+
+// ---------- Utility bill upload ----------
+let currentUtilityImage = '';
+document.getElementById('reg-utility').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const wrap = document.getElementById('utility-preview-wrap');
+  if(file.type === 'application/pdf'){
+    currentUtilityImage = 'PDF_ATTACHED';
+    wrap.innerHTML = `<p style="font-size:12px;color:var(--green-ink);margin:6px 0 0;">✓ PDF selected: ${escapeHtml(file.name)}</p>`;
+    return;
+  }
+  compressImage(file, 900, 0.7).then(dataUrl=>{
+    currentUtilityImage = dataUrl;
+    wrap.innerHTML = `<img class="preview-thumb" src="${dataUrl}" style="margin-top:8px;">`;
+  }).catch(()=>showToast('Could not process that file'));
+});
+
+// ---------- Service status block on registration ----------
+function checkServiceStatus(phone){
+  const order = orders.find(o => normPhone(o.phone) === normPhone(phone));
+  if(order && order.serviceStatus === 'passedout'){
+    return false; // blocked from ordering
+  }
+  return true;
+}
+
+// ---------- Update payout request to include bank details ----------
+document.getElementById('request-payout-btn').addEventListener('click', ()=>{
+  const phone = normPhone(document.getElementById('ref-phone').value);
+  const acctName = document.getElementById('payout-acct-name').value.trim();
+  const acctNumber = document.getElementById('payout-acct-number').value.trim();
+  const bank = document.getElementById('payout-bank').value;
+  const referrer = referrers.find(r => normPhone(r.phone) === phone);
+
+  if(!referrer || (referrer.earnings||0) <= 0){ showToast('No earnings to request'); return; }
+  if(!acctName){ showToast('Enter your account name'); return; }
+  if(!acctNumber || acctNumber.length < 10){ showToast('Enter a valid 10-digit account number'); return; }
+  if(!bank){ showToast('Select your bank'); return; }
+  if(!firebaseReady){ showToast('Not connected — check your internet'); return; }
+
+  payoutsRef.add({
+    phone: referrer.phone,
+    code: referrer.code,
+    amount: referrer.earnings,
+    acctName, acctNumber, bank,
+    status: 'pending',
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    showToast('Payout request sent ✓');
+    document.getElementById('payout-request-wrap').classList.add('hidden');
+    document.getElementById('payout-acct-name').value = '';
+    document.getElementById('payout-acct-number').value = '';
+    document.getElementById('payout-bank').value = '';
+  }).catch(()=>showToast('Could not submit — check your internet'));
+});
+
 // ---------- Category filter & search ----------
 document.querySelectorAll('.cat-btn').forEach(btn=>{
   btn.addEventListener('click', ()=>{
@@ -2766,7 +3033,11 @@ function checkNewReceipts(newReceipts){
 requestNotifPermission();
 
 // ---------- Init ----------
-renderCatalog(); // shows empty state instantly; Firestore listener repaints once data arrives
+renderCatalog();
+// Register PWA service worker
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/easybuy/sw.js').catch(()=>{});
+} // shows empty state instantly; Firestore listener repaints once data arrives
 </script>
 </body>
 </html>
